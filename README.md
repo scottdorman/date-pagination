@@ -15,8 +15,7 @@ A minimal JavaScript library that extends Bootstrap's pagination component to pr
 A full list of dependencies required for the bootstrap-datepaginator to function correctly.
 ```html
 <!-- Required Stylesheets -->
-<link href=<img width="401" alt="2024-07-28 16_20_56-index html and 6 more pages - Personal - Microsoft​ Edge" src="https://github.com/user-attachments/assets/67027afe-7f3f-4d36-a0bd-0167cdf59fc2">
-"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
 <link rel="stylesheet" href="date-paginator.min.css">
