@@ -1,0 +1,47 @@
+.date-pagination {
+  --date-pagination-today-bg: #3c77cec7;
+  --date-pagination-today-color: #fff;
+  --date-pagination-offday-bg: #F0F0F0;
+  --date-pagination-offday-active-bg: #428bca;
+  --date-pagination-separator-border-color: #ddd;
+  --date-pagination-separator-border-width: 0.5rem;
+  --date-pagination-separator-border-style: solid;
+  --date-pagination-height: 3.75rem;
+}
+.date-pagination .page-link {
+  height: var(--date-pagination-height);
+}
+.date-pagination.pagination-sm {
+  --date-pagination-height: 3.5rem;
+}
+.date-pagination.pagination-lg {
+  --date-pagination-height: 5.35rem;
+}
+.date-pagination .page-link.today {
+  --bs-pagination-bg: var(--date-pagination-today-bg);
+  --bs-pagination-color: var(--date-pagination-today-color);
+}
+.date-pagination .page-link.today.active {
+  --bs-pagination-active-bg: var(--bs-primary);
+}
+.date-pagination .page-link.offday {
+  --bs-pagination-bg: var(--date-pagination-offday-bg);
+}
+.date-pagination .page-link.offday.active {
+  --bs-pagination-active-bg: var(--date-pagination-offday-active-bg);
+}
+.date-pagination .page-link.offday.today {
+  --bs-pagination-bg: var(--date-pagination-today-bg);
+  --bs-pagination-color: var(--date-pagination-today-color);
+}
+.date-pagination .page-link.separator {
+  border-left: var(--date-pagination-separator-border-width) var(--date-pagination-separator-border-style) var(--date-pagination-separator-border-color) !important;
+}
+
+[data-bs-theme=dark] .date-pagination {
+  --date-pagination-today-bg: #0b1a30c7;
+  --date-pagination-today-color: #fff;
+  --date-pagination-offday-bg: #696868e4;
+  --date-pagination-offday-active-bg: #428bca;
+  --date-pagination-separator-border-color: #000000;
+}/*# sourceMappingURL=date-paginator.css.map */
