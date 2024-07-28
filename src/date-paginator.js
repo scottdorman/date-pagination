@@ -458,6 +458,21 @@ class DatePaginator {
 		element.setAttribute('data-pagination-item-type', 'nav');
 	}
 
+	#getComputedSizeClass(prefix) {
+		var computedSizeClass = '';
+
+		if (this.#options.size) {
+			if (this.#options.size === 'sm') {
+				computedSizeClass = `${prefix}-sm`;
+			}
+			else if (this.#options.size === 'lg') {
+				computedSizeClass = `${prefix}-lg`;
+			}
+		}
+
+		return computedSizeClass;
+	}
+
 	#render() {
 		var data = this.#buildData();
 
@@ -466,16 +481,8 @@ class DatePaginator {
 				this.#element.classList.add(this.#options.classes.wrapperElement);
 			}
 			
-			if (this.#options.size) {
-				if (this.#options.size === 'sm') {
-					this.#contentDOM.wrapper.classList.add('pagination-sm')
-				}
-				else if (this.#options.size === 'lg') {
-					this.#contentDOM.wrapper.classList.add('pagination-lg')
-				}
-			}
-
-			this.#contentDOM.wrapper = this.#createElementFromTemplate('pagination');
+			this.#contentDOM.wrapper.classList.add(this.#getComputedSizeClass('pagination'));
+  			this.#contentDOM.wrapper = this.#createElementFromTemplate('pagination');
 			this.#contentDOM.wrapper.setAttribute('data-pagination-start-date', this.#options.startDate.date);
 			this.#contentDOM.wrapper.setAttribute('data-pagination-end-date', this.#options.endDate.date);
 
@@ -494,11 +501,14 @@ class DatePaginator {
 					button.append(buttonIcon);
 
 					var buttonGroup = this.#createElementFromTemplate('toolbarButtonGroup');
+					buttonGroup.classList.add(this.#getComputedSizeClass('btn-group'));
+
 					buttonGroup.append(button);
 
 					if (this.#options.toolbar.showCalendar) {
 						buttonGroup.classList.add('me-2')
 					}
+
 					toolbar.append(buttonGroup);
 				}
 
@@ -512,7 +522,9 @@ class DatePaginator {
 					button.append(buttonIcon);
 
 					var buttonGroup = this.#createElementFromTemplate('toolbarButtonGroup');
+					buttonGroup.classList.add(this.#getComputedSizeClass('btn-group'));
 					buttonGroup.append(button);
+
 					toolbar.append(buttonGroup);
 				}
 
