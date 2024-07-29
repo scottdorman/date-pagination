@@ -30,6 +30,7 @@ A full list of dependencies required for date-pagination to function correctly.
     document.querySelector('#date-pagination').addEventListener('dateChanged.datePagination', e => {
         alert(e.detail.selectedDate);
     })
+</script>
 ```
 
 The component will bind to any existing DOM element.
