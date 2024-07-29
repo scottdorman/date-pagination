@@ -46,10 +46,24 @@ For advanced configuration, an options object can be passed on initialization.
 ```js
 var options = {
     endDate: { date: dayjs() },
-    slideRange: { window: 7, style: 'weekly'},
+    slideRange: { window: 'weekly'},
 }
 
 var d = new DatePaginator('#date-paginator', options);
+```
+
+You can also pass options for the date picker instance. For more information, see https://mymth.github.io/vanillajs-datepicker/#/options.
+```js
+var options = {
+    endDate: { date: dayjs() },
+    slideRange: { window: 'weekly'},
+}
+
+var datePickerOptions = {
+    clearButton: true
+}
+
+var d = new DatePaginator('#date-paginator', options, datePickerOptions);
 ```
 
 ## Options

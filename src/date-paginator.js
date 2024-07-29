@@ -19,6 +19,7 @@ class DatePaginator {
 		selectedDateChangedEvent: "dateChanged.datePagination"
 	};
 
+	static #weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 	static #defaultFormats = {
 		date: 'YYYY-MM-DD',
 		day: 'ddd'
@@ -101,7 +102,7 @@ class DatePaginator {
 		},
 
 		text: {
-			invalidDateFormat: 'The provided date is not in the correct format.', 
+			invalidDateFormat: 'The provided date is not in the correct format.',
 			outOfRange: 'Out of Range',
 			disabled: 'Disabled',
 			startOfRange: 'Start of range',
@@ -118,9 +119,9 @@ class DatePaginator {
 		}
 	};
 
-	#elementId;
 	#element;
 	#options;
+	#datePickerOptions;
 	#initialized = false;
 	#contentDOM = {
 		wrapper: null,
@@ -130,11 +131,11 @@ class DatePaginator {
 		listItem: null,
 		calendar: null,
 		toolbar: null,
-		datePicker: null
+		datePicker: null,
+		datePickerInput: null
 	}
 
-	constructor(element, options) {
-		this.#elementId = element;
+	constructor(element, options, datePickerOptions) {
 		this.#element = document.querySelector(element);
 		this.#options = {
 			...DatePaginator.#defaultOptions,
@@ -142,6 +143,40 @@ class DatePaginator {
 		};
 
 		this.#normalizeOptions();
+
+		var daysOfWeekHighlighted = [];
+		var daysOfWeekDisabled = [];
+
+		if (this.#options.offDays) {
+			for (const offDays of this.#options.offDays) {
+				for (const date of offDays.dates) {
+					var index = DatePaginator.#weekDays.indexOf(date);
+					if (index !== -1) {
+						daysOfWeekHighlighted.push(index);
+						if (offDays.disable) {
+							daysOfWeekDisabled.push(index);
+						}
+					}
+				}
+			}
+		}
+
+		var defaultDatePickerOptions = {
+			autohide: true,
+			buttonClass: 'btn',
+			todayButton: this.#options.toolbar.showToday,
+			todayHighlight: this.#options.highlightToday,
+			daysOfWeekHighlighted: daysOfWeekHighlighted,
+			daysOfWeekDisabled: daysOfWeekDisabled,
+			minDate: this.#options.startDate.date.toDate(),
+			maxDate: this.#options.endDate.date.toDate()
+		};
+
+		this.#datePickerOptions = {
+			...defaultDatePickerOptions,
+			...datePickerOptions
+		};
+
 		this.#render();
 		this.#subscribeEvents();
 	}
@@ -195,6 +230,7 @@ class DatePaginator {
 			(!selectedDate.isAfter(this.#options.endDate.date, 'd'))) {
 
 			this.#options.selectedDate.date = selectedDate.startOf('day');
+			this.#contentDOM.datePicker.setDate(this.#options.selectedDate.date.toDate());
 			this.#element.dispatchEvent(new CustomEvent(DatePaginator.#eventKeys.selectedDateChangedEvent, {
 				detail: {
 					selectedDate: selectedDate.clone()
@@ -209,7 +245,7 @@ class DatePaginator {
 		if (event.target.tagName === 'I') {
 			targetDataset = event.target.parentElement.dataset;
 		}
-		
+
 		switch (targetDataset.paginationAction) {
 			case 'goto':
 				this.#contentDOM.datePicker.show();
@@ -312,7 +348,7 @@ class DatePaginator {
 
 	#inRange(m) {
 		return (m.isSame(this.#options.startDate.date) || m.isAfter(this.#options.startDate.date)) &&
-		(m.isSame(this.#options.endDate.date) || m.isBefore(this.#options.endDate.date));
+			(m.isSame(this.#options.endDate.date) || m.isBefore(this.#options.endDate.date));
 	}
 
 	#isSelectedDate(m) {
@@ -397,7 +433,7 @@ class DatePaginator {
 				var selectedDate = this.#options.selectedDate.date.get('d');
 				var start = selectedDate - this.#options.selectedDate.date.startOf('w').get('d');
 				var end = this.#options.selectedDate.date.endOf('w').get('d') - selectedDate;
-	
+
 				range.start = this.#options.selectedDate.date.subtract(start, 'd');
 				range.end = this.#options.selectedDate.date.add(end, 'd');
 			}
@@ -478,7 +514,7 @@ class DatePaginator {
 			if (this.#options.classes.wrapperElement) {
 				this.#element.classList.add(this.#options.classes.wrapperElement);
 			}
-			
+
 			this.#contentDOM.wrapper = this.#createElementFromTemplate('pagination');
 			this.#setComputedSizeClass('pagination', this.#contentDOM.wrapper);
 			this.#contentDOM.wrapper.setAttribute('data-pagination-start-date', this.#options.startDate.date);
@@ -526,6 +562,9 @@ class DatePaginator {
 					buttonGroup.append(button);
 
 					toolbar.append(buttonGroup);
+
+					this.#contentDOM.datePickerInput = this.#createElementFromTemplate('datePicker');
+					toolbar.append(this.#contentDOM.datePickerInput);	
 				}
 
 				this.#contentDOM.toolbar = toolbar;
@@ -560,30 +599,20 @@ class DatePaginator {
 			this.#element.removeChild(this.#element.lastChild);
 		}
 
-    	while (this.#contentDOM.wrapper.lastChild) {
+		while (this.#contentDOM.wrapper.lastChild) {
 			this.#contentDOM.wrapper.removeChild(this.#contentDOM.wrapper.lastChild);
 		}
 
 		this.#element.append(this.#contentDOM.wrapper);
 		if (this.#options.toolbar.showToolbar && this.#contentDOM.toolbar) {
-			this.#element.append(this.#contentDOM.toolbar);
 			if (this.#options.toolbar.showCalendar) {
-				var input = this.#createElementFromTemplate('datePicker');
-				this.#contentDOM.toolbar.append(input);
-
-				this.#contentDOM.datePicker = new Datepicker(input, {
-					autohide: true,
-					buttonClass: 'btn',
-					todayHighlight: true,
-					minDate: this.#options.startDate.date.toDate(),
-					maxDate: this.#options.endDate.date.toDate()
-				  });
-
-				  input.addEventListener('changeDate', event => {
+				this.#contentDOM.datePicker = new Datepicker(this.#contentDOM.datePickerInput, this.#datePickerOptions);
+				this.#contentDOM.datePickerInput.addEventListener('changeDate', event => {
 					this.#setSelectedDate(dayjs(event.detail.date));
 					this.#render();
 				});
 			}
+			this.#element.append(this.#contentDOM.toolbar);
 		}
 
 		var data = this.#buildData();
@@ -638,7 +667,7 @@ class DatePaginator {
 			else {
 				dateItemElement.addEventListener('click', event => {
 					this.#handleEvents(event);
-				});	
+				});
 			}
 
 			this.#contentDOM.wrapper.append(dateItemElement);
