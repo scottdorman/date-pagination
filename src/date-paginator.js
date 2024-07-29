@@ -106,6 +106,8 @@ class DatePaginator {
 			disabled: 'Disabled',
 			startOfRange: 'Start of range',
 			endOfRange: 'End of range',
+			todayButtonTooltip: 'Go to Today',
+			calendarButtonTooltip: 'Select a date'
 		},
 
 		icons: {
@@ -458,19 +460,15 @@ class DatePaginator {
 		element.setAttribute('data-pagination-item-type', 'nav');
 	}
 
-	#getComputedSizeClass(prefix) {
-		var computedSizeClass = '';
-
+	#setComputedSizeClass(prefix, element) {
 		if (this.#options.size) {
 			if (this.#options.size === 'sm') {
-				computedSizeClass = `${prefix}-sm`;
+				element.classList.add(`${prefix}-sm`);
 			}
 			else if (this.#options.size === 'lg') {
-				computedSizeClass = `${prefix}-lg`;
+				element.classList.add(`${prefix}-lg`);
 			}
 		}
-
-		return computedSizeClass;
 	}
 
 	#render() {
@@ -481,8 +479,8 @@ class DatePaginator {
 				this.#element.classList.add(this.#options.classes.wrapperElement);
 			}
 			
-			this.#contentDOM.wrapper.classList.add(this.#getComputedSizeClass('pagination'));
-  			this.#contentDOM.wrapper = this.#createElementFromTemplate('pagination');
+			this.#contentDOM.wrapper = this.#createElementFromTemplate('pagination');
+			this.#setComputedSizeClass('pagination', this.#contentDOM.wrapper);
 			this.#contentDOM.wrapper.setAttribute('data-pagination-start-date', this.#options.startDate.date);
 			this.#contentDOM.wrapper.setAttribute('data-pagination-end-date', this.#options.endDate.date);
 
@@ -498,10 +496,11 @@ class DatePaginator {
 
 					var button = this.#createElementFromTemplate('toolbarButton');
 					button.setAttribute('data-pagination-action', 'today');
+					button.setAttribute('title', this.#options.text.todayButtonTooltip);
 					button.append(buttonIcon);
 
 					var buttonGroup = this.#createElementFromTemplate('toolbarButtonGroup');
-					buttonGroup.classList.add(this.#getComputedSizeClass('btn-group'));
+					this.#setComputedSizeClass('btn-group', buttonGroup);
 
 					buttonGroup.append(button);
 
@@ -518,11 +517,12 @@ class DatePaginator {
 
 					var button = this.#createElementFromTemplate('toolbarButton');
 					button.setAttribute('data-pagination-action', 'goto');
+					button.setAttribute('title', this.#options.text.calendarButtonTooltip);
 					button.setAttribute('id', 'datePickerContainer');
 					button.append(buttonIcon);
 
 					var buttonGroup = this.#createElementFromTemplate('toolbarButtonGroup');
-					buttonGroup.classList.add(this.#getComputedSizeClass('btn-group'));
+					this.#setComputedSizeClass('btn-group', buttonGroup);
 					buttonGroup.append(button);
 
 					toolbar.append(buttonGroup);
