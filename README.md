@@ -69,31 +69,65 @@ var d = new DatePaginator('#date-paginator', options, datePickerOptions);
 ## Options
 Configuration options that can be used to change behavior or visual elements.
 
+### pageItem
+An object which provides the text and tooltip formatting for the page items.
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `pageItem` | object || An object which provides the text and tooltip formatting for the page items. |
 | `pageItem.text` | string | `'ddd<br/>D'` | Format used for page item text. For more information, see https://day.js.org/docs/en/display/format. |
 | `pageItem.tooltip` | string | `'dddd, D MMMM YYYY'` | Format used for page item tooltips. For more information, see https://day.js.org/docs/en/display/format. |
-| `slideRange` | object || An object which determines the number of days displayed to the left and right of the currently selected date. |
+
+### slideRange
+An object which determines the number of days displayed to the left and right of the currently selected date.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
 | `slideRange.window` | string, integer | `'weekly'` | Display the specified number of days to the left and right of the currently selected date. If `weekly`, the display will be limited to the days of the current week. |
+
+### size
+Sets the height of the paginator component.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
 | `size` | string | `undefined` | Sets the height of the paginator component. Accepts `small`, `normal`, `large`. |
+
+### highlightToday
+Whether or not to distinguish visually today's date.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
 | `highlightToday` | boolean | `true` | Whether or not to distinguish visually today's date. |
-| `toolbar` | object || |
+
+### toolbar
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
 | `toolbar.showToolbar` | boolean | `true` | Display the toolbar. |
 | `toolbar.showCalendar` | boolean | `true` | Display the calendar button to allow the user to choose a date using a date picker. |
 | `toolbar.showToday` | boolean | `true` | Display the today button to allow the user to easily go back to today's date. |
-| `startDate` | object || An object representing the earliest date that may be selected. Any dates shown before this date will be disabled. |
+
+### startDate
+An object representing the earliest date that may be selected. Any dates shown before this date will be disabled.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
 | `startDate.date` | string, DayJS | `dayjs(new Date(-8640000000000000))` | The earliest date that may be selected.
 | `startDate.format` | string | `'YYYY-MM-DD'` | Sets the date format used when parsing string representations of `startDate`. |
-| `endDate` | object || An object representing the latest date that may be selected. Any dates shown after this date will be disabled. |
+
+### endDate
+An object representing the latest date that may be selected. Any dates shown after this date will be disabled.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
 | `endDate.date` | string, DayJS | `dayjs(new Date(8640000000000000))` | The latest date that may be selected. |
 | `endDate.format` | string | `'YYYY-MM-DD'` | Sets the date format used when parsing string representations of `endDate`. |
-| `selectedDate` | object || An object representing the selected date. |
+
+### selectedDate
+An object representing the selected date.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
 | `selectedDate.date` | string, DayJS | `dayjs()` | The selected date. |
 | `selectedDate.format` | string | `'YYYY-MM-DD'` | Sets the date format used when parsing string representations of `selectedDate`. |
 | `selectedDate.text` | string | `'dddd<br/>D MMMM YYYY'` | Sets the date format used when displaying the `selectedDate`. |
 | `selectedDate.highlightSelectedDate` | boolean | `true` | Whether or not to distinguish visually the selected date. |
-| `classes` | object || |
+
+### classes
+Additional CSS classes for the corresponding HTML element template.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
 | `classes.wrapperElement` | string | `undefined` | |
 | `classes.pagination` | string | `undefined` | |
 | `classes.pageItem` | string | `undefined` | |
@@ -103,24 +137,36 @@ Configuration options that can be used to change behavior or visual elements.
 | `classes.toolbar` | string | `bg-secondary-subtle` | |
 | `classes.toolbarButtonGroup` | string | `undefined` | |
 | `classes.toolbarButton` | string | `btn-link` | |
-| `templates` | object || |
-| `templates.pagination` | string | `<ul class="pagination date-pagination"></ul>` | |
-| `templates.pageItem` | string | `<li class="page-item"></li>` | |
-| `templates.pageLink` | string | `<a href="#" class="page-link text-center align-content-center"></a>` | |
-| `templates.pageLinkNav` | string | `<button type="button" class="page-link text-center align-content-center"></button>` | |
-| `templates.icon` | string | `<i class="bi"></i>` | |
-| `templates.toolbar` | string | `<div class="btn-toolbar rounded rounded-top-0 justify-content-center" role="toolbar"></div>` | |
-| `templates.toolbarButtonGroup` | string | `<div class="btn-group" role="group"></div>` | |
-| `templates.toolbarButton` | string | `<button type="button" class="btn"></button>` | |
-| `templates.disabledPageItem` | string | `<span class="d-inline-block" tabindex="0"></span>` | |
-| `templates.datePicker` | string | `<input class="visually-hidden" id="datePicker"></input>` | |
-| `text` | object || |
+
+### templates
+The HTML element template used to to define the pagination structure.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `templates.pagination` | string | `<ul class="pagination date-pagination"></ul>` | The Bootstrap `pagination` component. |
+| `templates.pageItem` | string | `<li class="page-item"></li>` | The individual `page-item` elements. |
+| `templates.pageLink` | string | `<a href="#" class="page-link text-center align-content-center"></a>` | The `page-link` anchor. |
+| `templates.pageLinkNav` | string | `<button type="button" class="page-link text-center align-content-center"></button>` | The `page-link` anchor used for forward or backward navigation. |
+| `templates.icon` | string | `<i class="bi"></i>` | THe Bootstrap Icon container. |
+| `templates.toolbar` | string | `<div class="btn-toolbar rounded rounded-top-0 justify-content-center" role="toolbar"></div>` | The Bootstrap button toolbar component. |
+| `templates.toolbarButtonGroup` | string | `<div class="btn-group" role="group"></div>` | The individual button group elements. |
+| `templates.toolbarButton` | string | `<button type="button" class="btn"></button>` | The toolbar button. |
+| `templates.disabledPageItem` | string | `<span class="d-inline-block" tabindex="0"></span>` | A disabled `page-item` element. This allows disabled elements to still display tooltips. |
+| `templates.datePicker` | string | `<input class="visually-hidden" id="datePicker"></input>` | The `input` associated with the datePicker control. |
+
+### text
+Text string content displayed by the pagination control. This can be modified for localization.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
 | `text.invalidDateFormat` | string | `The provided date is not in the correct format.` | |
 | `text.outOfRange` | string | `Out of Range` | |
 | `text.disabled` | string | `Disabled` | |
 | `text.startOfRange` | string | `Start of range` | |
 | `text.endOfRange` | string | `End of range` | |
-| `icons` | object || |
+
+### icons
+The Bootstrap Icon classes used for icons.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
 | `icons.leftNav` | string | `bi-chevron-left` | |
 | `icons.rightNav` | string | `bi-chevron-right` | |
 | `icons.today` | string | `bi-calendar-date`| |
