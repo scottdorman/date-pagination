@@ -1,5 +1,5 @@
 /* =========================================================
- * date-paginator.js v1.0.0
+ * date-pagination.js v1.0.0
  * =========================================================
  * Copyright 2024 Scott Dorman
  * Project URL : https://github.com/scottdorman/date-paginator
@@ -14,7 +14,7 @@
  * limitations under the License.
  * ========================================================= */
 
-class DatePaginator {
+class DatePagination {
 	static #eventKeys = {
 		selectedDateChangedEvent: "dateChanged.datePagination"
 	};
@@ -46,17 +46,17 @@ class DatePaginator {
 
 		startDate: {
 			date: dayjs(new Date(-8640000000000000)),
-			format: DatePaginator.#defaultFormats.date
+			format: DatePagination.#defaultFormats.date
 		},
 
 		endDate: {
 			date: dayjs(new Date(8640000000000000)),
-			format: DatePaginator.#defaultFormats.date
+			format: DatePagination.#defaultFormats.date
 		},
 
 		selectedDate: {
 			date: dayjs().startOf('d'),
-			format: DatePaginator.#defaultFormats.date,
+			format: DatePagination.#defaultFormats.date,
 			text: 'dddd<br/>D MMMM YYYY',
 			highlight: true
 		},
@@ -64,7 +64,7 @@ class DatePaginator {
 		offDays: [
 			{
 				dates: ['Sat', 'Sun'],
-				format: DatePaginator.#defaultFormats.day,
+				format: DatePagination.#defaultFormats.day,
 				disable: false
 			}
 		],
@@ -72,7 +72,7 @@ class DatePaginator {
 		periodSeparators: [
 			{
 				dates: ['Mon'],
-				format: DatePaginator.#defaultFormats.day
+				format: DatePagination.#defaultFormats.day
 			}
 		],
 
@@ -138,7 +138,7 @@ class DatePaginator {
 	constructor(element, options, datePickerOptions) {
 		this.#element = document.querySelector(element);
 		this.#options = {
-			...DatePaginator.#defaultOptions,
+			...DatePagination.#defaultOptions,
 			...options
 		};
 
@@ -150,7 +150,7 @@ class DatePaginator {
 		if (this.#options.offDays) {
 			for (const offDays of this.#options.offDays) {
 				for (const date of offDays.dates) {
-					var index = DatePaginator.#weekDays.indexOf(date);
+					var index = DatePagination.#weekDays.indexOf(date);
 					if (index !== -1) {
 						daysOfWeekHighlighted.push(index);
 						if (offDays.disable) {
@@ -204,7 +204,7 @@ class DatePaginator {
 	}
 
 	#unsubscribeEvents() {
-		this.#element.removeEventListener(DatePaginator.#eventKeys.selectedDateChangedEvent);
+		this.#element.removeEventListener(DatePagination.#eventKeys.selectedDateChangedEvent);
 	}
 
 	#removeDatePicker() {
@@ -231,7 +231,7 @@ class DatePaginator {
 
 			this.#options.selectedDate.date = selectedDate.startOf('day');
 			this.#contentDOM.datePicker.setDate(this.#options.selectedDate.date.toDate());
-			this.#element.dispatchEvent(new CustomEvent(DatePaginator.#eventKeys.selectedDateChangedEvent, {
+			this.#element.dispatchEvent(new CustomEvent(DatePagination.#eventKeys.selectedDateChangedEvent, {
 				detail: {
 					selectedDate: selectedDate.clone()
 				}
@@ -307,7 +307,7 @@ class DatePaginator {
 
 	#shimDateObject(option) {
 		if (typeof this.#options[option].date === 'string') {
-			var format = this.#options[option].format ?? DatePaginator.#defaultFormats.date;
+			var format = this.#options[option].format ?? DatePagination.#defaultFormats.date;
 			this.#options[option].date = dayjs(this.#options[option].date, format).startOf('day');
 		}
 		else if (!this.#options[option].date instanceof dayjs) {

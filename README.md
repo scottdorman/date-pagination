@@ -1,7 +1,7 @@
-# date-paginator
+# date-pagination
 A minimal JavaScript library that extends Bootstrap's pagination component to provide a way of paging date-based results in your application.
 
-<img width="401" alt="date-paginator" src="https://github.com/user-attachments/assets/afd72b9a-28a0-4274-aef2-023c4026c9b9">
+<img width="401" alt="date-pagination" src="https://github.com/user-attachments/assets/afd72b9a-28a0-4274-aef2-023c4026c9b9">
 
 ## Requirements
 
@@ -12,34 +12,34 @@ A minimal JavaScript library that extends Bootstrap's pagination component to pr
 
 ## Usage
 
-A full list of dependencies required for the bootstrap-datepaginator to function correctly.
+A full list of dependencies required for date-pagination to function correctly.
 ```js
 <!-- Required Stylesheets -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
-<link rel="stylesheet" href="date-paginator.min.css">
+<link rel="stylesheet" href="date-pagination.min.css">
 
 <!-- Required Javascript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.js"></script>
-<script src="date-paginator.min.js"></script>
+<script src="date-pagination.min.js"></script>
 <script>
-    var d = new DatePaginator('#date-paginator');
-    document.querySelector('#date-paginator').addEventListener('dateChanged.datePagination', e => {
+    var d = new DatePagination('#date-pagination');
+    document.querySelector('#date-pagination').addEventListener('dateChanged.datePagination', e => {
         alert(e.detail.selectedDate);
     })
 ```
 
 The component will bind to any existing DOM element.
 ```html
-<nav id="paginator"></nav>
+<nav id="date-pagination"></nav>
 ```
 
 The most basic usage, in most cases this is all you'll need.
 ```js
-var d = new DatePaginator('#date-paginator');
+var d = new DatePagination('#date-pagination');
 ```
 
 For advanced configuration, an options object can be passed on initialization.  
@@ -49,7 +49,7 @@ var options = {
     slideRange: { window: 'weekly'},
 }
 
-var d = new DatePaginator('#date-paginator', options);
+var d = new DatePagination('#date-pagination', options);
 ```
 
 You can also pass options for the date picker instance. For more information, see https://mymth.github.io/vanillajs-datepicker/#/options.
@@ -63,7 +63,7 @@ var datePickerOptions = {
     clearButton: true
 }
 
-var d = new DatePaginator('#date-paginator', options, datePickerOptions);
+var d = new DatePagination('#date-pagination', options, datePickerOptions);
 ```
 
 ## Options
@@ -83,10 +83,10 @@ An object which determines the number of days displayed to the left and right of
 | `slideRange.window` | string, integer | `'weekly'` | Display the specified number of days to the left and right of the currently selected date. If `weekly`, the display will be limited to the days of the current week. |
 
 ### size
-Sets the height of the paginator component.
+Sets the height of the pagination component.
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `size` | string | `undefined` | Sets the height of the paginator component. Accepts `small`, `normal`, `large`. |
+| `size` | string | `undefined` | Sets the height of the pagination component. Accepts `small`, `normal`, `large`. |
 
 ### highlightToday
 Whether or not to distinguish visually today's date.
@@ -244,40 +244,40 @@ periodSeparators: []
 ## Methods
 
 ### getSelectedDate
-Gets the selected date as a DayJS instance from the paginator.
+Gets the selected date as a DayJS instance from the pagination component.
 
 ```js
-var d = new DatePaginator('#date-paginator');
+var d = new DatePagination('#date-pagination');
 d.getSelectedDate()
 ```
 
 ### setSelectedDate
 Sets the selected date, triggering a refresh to reflect the new state.
 ```js
-var d = new DatePaginator('#date-paginator');
+var d = new DatePagination('#date-pagination');
 d.setSelectedDate({ date: '2013-10-05', format: 'YYYY-MM-DD' });
 ```
 
 If called without passing a format argument, `selectedDate.format` will be used.
 
 ```js
-var d = new DatePaginator('#date-paginator');
+var d = new DatePagination('#date-pagination');
 d.setSelectedDate({ date: '2013-10-05' });
 ```
 
 You can also pass a callback function, which will be run after the date has been set, that receives the selected date as a parameter.
 
 ```js
-var d = new DatePaginator('#date-paginator');
+var d = new DatePagination('#date-pagination');
 d.setSelectedDate({ date: '2013-10-05', format: 'YYYY-MM-DD' }, (data) => {
     console.log(data)
 });
 ```
 ### remove
-Removes the date paginator component. Removing attached events, internal attached objects, and added HTML elements.
+Removes the date pagination component. Removing attached events, internal attached objects, and added HTML elements.
 
 ```js
-var d = new DatePaginator('#date-paginator');
+var d = new DatePagination('#date-pagination');
 d.destroy();
 ```
 
@@ -287,8 +287,8 @@ d.destroy();
 Fired when the selected date changes.
 
 ```js
-var d = new DatePaginator('#date-paginator');
-document.querySelector('#date-paginator').addEventListener('dateChanged.datePagination', e => {
+var d = new DatePagination('#date-pagination');
+document.querySelector('#date-pagination').addEventListener('dateChanged.datePagination', e => {
     alert(e.detail.selectedDate);
 })
 ```
