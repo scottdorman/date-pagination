@@ -40,6 +40,7 @@ class DatePagination {
 
 		toolbar: {
 			showToolbar: true,
+			placement: 'bottom',
 			showCalendar: true,
 			showToday: true,
 		},
@@ -81,20 +82,19 @@ class DatePagination {
 			pagination: undefined,
 			pageItem: undefined,
 			pageLink: undefined,
-			pageLinkNav: undefined,
 			icon: undefined,
 			toolbar: 'bg-secondary-subtle',
 			toolbarButtonGroup: undefined,
-			toolbarButton: 'btn-link'
+			toolbarButton: 'btn-link',
+			pageLinkToolbarButton: undefined
 		},
 
 		templates: {
 			pagination: '<ul class="pagination date-pagination"></ul>',
 			pageItem: '<li class="page-item"></li>',
 			pageLink: '<a href="#" class="page-link text-center align-content-center"></a>',
-			pageLinkNav: '<button type="button" class="page-link text-center align-content-center"></button>',
 			icon: '<i class="bi"></i>',
-			toolbar: '<div class="btn-toolbar rounded rounded-top-0 justify-content-center" role="toolbar"></div>',
+			toolbar: '<div class="btn-toolbar rounded justify-content-center" role="toolbar"></div>',
 			toolbarButtonGroup: '<div class="btn-group" role="group"></div>',
 			toolbarButton: '<button type="button" class="btn"></button>',
 			disabledPageItem: '<span class="d-inline-block" tabindex="0"></span>',
@@ -131,17 +131,14 @@ class DatePagination {
 		listItem: null,
 		calendar: null,
 		toolbar: null,
+		toolbarItems: [],
 		datePicker: null,
 		datePickerInput: null
 	}
 
 	constructor(element, options, datePickerOptions) {
 		this.#element = document.querySelector(element);
-		this.#options = {
-			...DatePagination.#defaultOptions,
-			...options
-		};
-
+		this.#options = this.#mergeDeep(DatePagination.#defaultOptions, options);
 		this.#normalizeOptions();
 
 		var daysOfWeekHighlighted = [];
@@ -172,10 +169,11 @@ class DatePagination {
 			maxDate: this.#options.endDate.date.toDate()
 		};
 
-		this.#datePickerOptions = {
-			...defaultDatePickerOptions,
-			...datePickerOptions
-		};
+		if (this.#options.toolbar.placement === 'start' || this.#options.toolbar.placement === 'end') {
+			defaultDatePickerOptions.container = this.#element;
+		}
+
+		this.#datePickerOptions = this.#mergeDeep(defaultDatePickerOptions, datePickerOptions);
 
 		this.#render();
 		this.#subscribeEvents();
@@ -193,6 +191,27 @@ class DatePagination {
 		if (cb && (typeof cb === 'function')) {
 			cb(this.#options.selectedDate.date);
 		}
+	}
+
+	#isObject(item) {
+		return (item && typeof item === 'object' && !Array.isArray(item));
+	}
+
+	#mergeDeep(target, source) {
+		let output = Object.assign({}, target);
+		if (this.#isObject(target) && this.#isObject(source)) {
+			Object.keys(source).forEach(key => {
+				if (this.#isObject(source[key])) {
+					if (!(key in target))
+						Object.assign(output, { [key]: source[key] });
+					else
+						output[key] = this.#mergeDeep(target[key], source[key]);
+				} else {
+					Object.assign(output, { [key]: source[key] });
+				}
+			});
+		}
+		return output;
 	}
 
 	#subscribeEvents() {
@@ -286,6 +305,17 @@ class DatePagination {
 		}
 		else if (this.#options.size === 'large') {
 			this.#options.size = 'lg';
+		}
+
+		switch (this.#options.toolbar.placement) {
+			case 'start':
+			case 'end':
+			case 'top':
+			case 'bottom':
+				break;
+			default:
+				this.#options.toolbar.placement = 'bottom'
+				break;
 		}
 
 		// Parse start and end dates 
@@ -521,53 +551,101 @@ class DatePagination {
 			this.#contentDOM.wrapper.setAttribute('data-pagination-end-date', this.#options.endDate.date);
 
 			if (this.#options.toolbar.showToolbar) {
-				this.#element.classList.add('d-inline-block');
+				var usePageItems = false;
 
-				var toolbar = this.#createElementFromTemplate('toolbar');
-				this.#contentDOM.wrapper.classList.add('mb-0');
+				switch (this.#options.toolbar.placement) {
+					case 'top':
+						this.#element.classList.add('d-inline-block');
+						break;
 
-				if (this.#options.toolbar.showToday) {
-					var buttonIcon = this.#createElementFromTemplate('icon');
-					buttonIcon.classList.add(this.#options.icons.today);
+					case 'bottom':
+						this.#element.classList.add('d-inline-block');
+						this.#contentDOM.wrapper.classList.add('mb-0');
+						break;
 
-					var button = this.#createElementFromTemplate('toolbarButton');
-					button.setAttribute('data-pagination-action', 'today');
-					button.setAttribute('title', this.#options.text.todayButtonTooltip);
-					button.append(buttonIcon);
+					case 'start':
+					case 'end':
+						usePageItems = true;
+						this.#element.classList.add('d-flex');
+						break;
+				}
 
-					var buttonGroup = this.#createElementFromTemplate('toolbarButtonGroup');
-					this.#setComputedSizeClass('btn-group', buttonGroup);
+				if (usePageItems) {
+					if (this.#options.toolbar.showToday) {
+						var pageLink = this.#createElementFromTemplate('pageLink');
+						pageLink.setAttribute('data-pagination-action', 'today');
+						pageLink.setAttribute('title', this.#options.text.todayButtonTooltip);
+						pageLink.classList.add(this.#options.classes.pageLinkToolbarButton);
 
-					buttonGroup.append(button);
+						var icon = this.#createElementFromTemplate('icon');
+						icon.classList.add(this.#options.icons.today);
+						pageLink.append(icon);
 
-					if (this.#options.toolbar.showCalendar) {
-						buttonGroup.classList.add('me-2')
+						this.#contentDOM.toolbarItems.push(pageLink);
 					}
 
-					toolbar.append(buttonGroup);
+					if (this.#options.toolbar.showCalendar) {
+						var pageLink = this.#createElementFromTemplate('pageLink');
+						pageLink.setAttribute('data-pagination-action', 'goto');
+						pageLink.setAttribute('title', this.#options.text.calendarButtonTooltip);
+						pageLink.classList.add(this.#options.classes.pageLinkToolbarButton);
+
+						var icon = this.#createElementFromTemplate('icon');
+						icon.classList.add(this.#options.icons.datePicker);
+						pageLink.append(icon);
+
+						this.#contentDOM.datePickerInput = this.#createElementFromTemplate('datePicker');
+						pageLink.append(this.#contentDOM.datePickerInput);
+
+						this.#contentDOM.toolbarItems.push(pageLink);
+					}
 				}
+				else {
+					var toolbar = this.#createElementFromTemplate('toolbar');
 
-				if (this.#options.toolbar.showCalendar) {
-					var buttonIcon = this.#createElementFromTemplate('icon');
-					buttonIcon.classList.add(this.#options.icons.datePicker);
+					if (this.#options.toolbar.showToday) {
+						var buttonIcon = this.#createElementFromTemplate('icon');
+						buttonIcon.classList.add(this.#options.icons.today);
 
-					var button = this.#createElementFromTemplate('toolbarButton');
-					button.setAttribute('data-pagination-action', 'goto');
-					button.setAttribute('title', this.#options.text.calendarButtonTooltip);
-					button.setAttribute('id', 'datePickerContainer');
-					button.append(buttonIcon);
+						var button = this.#createElementFromTemplate('toolbarButton');
+						button.setAttribute('data-pagination-action', 'today');
+						button.setAttribute('title', this.#options.text.todayButtonTooltip);
+						button.append(buttonIcon);
 
-					var buttonGroup = this.#createElementFromTemplate('toolbarButtonGroup');
-					this.#setComputedSizeClass('btn-group', buttonGroup);
-					buttonGroup.append(button);
+						var buttonGroup = this.#createElementFromTemplate('toolbarButtonGroup');
+						this.#setComputedSizeClass('btn-group', buttonGroup);
 
-					toolbar.append(buttonGroup);
+						buttonGroup.append(button);
 
-					this.#contentDOM.datePickerInput = this.#createElementFromTemplate('datePicker');
-					toolbar.append(this.#contentDOM.datePickerInput);	
+						if (this.#options.toolbar.showCalendar) {
+							buttonGroup.classList.add('me-2')
+						}
+
+						toolbar.append(buttonGroup);
+					}
+
+					if (this.#options.toolbar.showCalendar) {
+						var buttonIcon = this.#createElementFromTemplate('icon');
+						buttonIcon.classList.add(this.#options.icons.datePicker);
+
+						var button = this.#createElementFromTemplate('toolbarButton');
+						button.setAttribute('data-pagination-action', 'goto');
+						button.setAttribute('title', this.#options.text.calendarButtonTooltip);
+						button.setAttribute('id', 'datePickerContainer');
+						button.append(buttonIcon);
+
+						var buttonGroup = this.#createElementFromTemplate('toolbarButtonGroup');
+						this.#setComputedSizeClass('btn-group', buttonGroup);
+						buttonGroup.append(button);
+
+						toolbar.append(buttonGroup);
+
+						this.#contentDOM.datePickerInput = this.#createElementFromTemplate('datePicker');
+						toolbar.append(this.#contentDOM.datePickerInput);
+					}
+
+					this.#contentDOM.toolbar = toolbar;
 				}
-
-				this.#contentDOM.toolbar = toolbar;
 			}
 
 			this.#contentDOM.leftNav = this.#createElementFromTemplate('pageLink');
@@ -577,8 +655,26 @@ class DatePagination {
 			this.#setNavAttributes(this.#contentDOM.rightNav, 'right');
 
 			if (this.#options.toolbar.showToolbar) {
-				this.#contentDOM.leftNav.classList.add('rounded-bottom-0');
-				this.#contentDOM.rightNav.classList.add('rounded-bottom-0');
+				this.#contentDOM.leftNav.classList.add(`rounded-${this.#options.toolbar.placement}-0`);
+				this.#contentDOM.rightNav.classList.add(`rounded-${this.#options.toolbar.placement}-0`);
+
+				switch (this.#options.toolbar.placement) {
+					case 'top':
+						this.#contentDOM.toolbar.classList.add('rounded-bottom-0');
+						break;
+
+					case 'bottom':
+						this.#contentDOM.toolbar.classList.add('rounded-top-0');
+						break;
+
+					case 'start':
+						this.#contentDOM.leftNav.classList.add('ms-2');
+						break;
+
+					case 'end':
+						this.#contentDOM.rightNav.classList.add('me-2');
+						break;
+				}
 			}
 
 			var leftNavIcon = this.#createElementFromTemplate('icon');
@@ -603,19 +699,37 @@ class DatePagination {
 			this.#contentDOM.wrapper.removeChild(this.#contentDOM.wrapper.lastChild);
 		}
 
-		this.#element.append(this.#contentDOM.wrapper);
-		if (this.#options.toolbar.showToolbar && this.#contentDOM.toolbar) {
-			if (this.#options.toolbar.showCalendar) {
-				this.#contentDOM.datePicker = new Datepicker(this.#contentDOM.datePickerInput, this.#datePickerOptions);
-				this.#contentDOM.datePickerInput.addEventListener('changeDate', event => {
-					this.#setSelectedDate(dayjs(event.detail.date));
-					this.#render();
-				});
-			}
-			this.#element.append(this.#contentDOM.toolbar);
+		if (this.#options.toolbar.showToolbar && this.#options.toolbar.showCalendar) {
+			this.#contentDOM.datePicker = new Datepicker(this.#contentDOM.datePickerInput, this.#datePickerOptions);
+			this.#contentDOM.datePickerInput.addEventListener('changeDate', event => {
+				this.#setSelectedDate(dayjs(event.detail.date));
+				this.#render();
+			});
+		}
+
+		switch (this.#options.toolbar.placement) {
+			case 'top':
+				this.#element.append(this.#contentDOM.toolbar);
+				this.#element.append(this.#contentDOM.wrapper);
+				break;
+
+			case 'bottom':
+				this.#element.append(this.#contentDOM.wrapper);
+				this.#element.append(this.#contentDOM.toolbar);
+				break;
+
+			default:
+				this.#element.append(this.#contentDOM.wrapper);
+				break;
 		}
 
 		var data = this.#buildData();
+
+		if (this.#options.toolbar.placement === 'start') {
+			[...this.#contentDOM.toolbarItems].map(item => {
+				this.#contentDOM.wrapper.append(this.#appendListItem(item, { 'data-pagination-item-type': 'toolbar-button' }));
+			});
+		}
 
 		this.#contentDOM.leftNav.classList.remove('disabled');
 		this.#contentDOM.leftNav.setAttribute('title', '');
@@ -684,5 +798,11 @@ class DatePagination {
 		}
 
 		this.#contentDOM.wrapper.append(this.#appendListItem(this.#contentDOM.rightNav, { 'data-pagination-item-type': 'nav' }));
+
+		if (this.#options.toolbar.placement === 'end') {
+			[...this.#contentDOM.toolbarItems].map(item => {
+				this.#contentDOM.wrapper.append(this.#appendListItem(item, { 'data-pagination-item-type': 'toolbar-button' }));
+			});
+		}
 	}
 }

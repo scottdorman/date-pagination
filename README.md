@@ -99,6 +99,7 @@ Whether or not to distinguish visually today's date.
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `toolbar.showToolbar` | boolean | `true` | Display the toolbar. |
+| `toolbar.placement` | string | `bottom` | The toolbar placement. Accepts `start`, `end`, `top`, `bottom`. For `start` and `end`, the toolbar buttons are displayed as additional `page-item` buttons instead of a toolbar. |
 | `toolbar.showCalendar` | boolean | `true` | Display the calendar button to allow the user to choose a date using a date picker. |
 | `toolbar.showToday` | boolean | `true` | Display the today button to allow the user to easily go back to today's date. |
 
@@ -129,15 +130,15 @@ An object representing the selected date.
 Additional CSS classes for the corresponding HTML element template.
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `classes.wrapperElement` | string | `undefined` | |
-| `classes.pagination` | string | `undefined` | |
-| `classes.pageItem` | string | `undefined` | |
-| `classes.pageLink` | string | `undefined` | |
-| `classes.pageLinkNav` | string | `undefined` | |
-| `classes.icon` | string | `undefined` | |
-| `classes.toolbar` | string | `bg-secondary-subtle` | |
-| `classes.toolbarButtonGroup` | string | `undefined` | |
-| `classes.toolbarButton` | string | `btn-link` | |
+| `classes.wrapperElement` | string | `undefined` | Additional CSS for the wrapper element. |
+| `classes.pagination` | string | `undefined` | Additional CSS for the Bootstrap `pagination` component. |
+| `classes.pageItem` | string | `undefined` | Additional CSS for the Bootstrap `page-item` components. |
+| `classes.pageLink` | string | `undefined` |Additional CSS for the Bootstrap `page-item` components. |
+| `classes.icon` | string | `undefined` | Additional CSS for the `i` icon element for buttons. |
+| `classes.toolbar` | string | `bg-secondary-subtle` | Additional CSS for the `btn-toolbar` component. |
+| `classes.toolbarButtonGroup` | string | `undefined` | Additional CSS for the `btn-group` components. |
+| `classes.toolbarButton` | string | `btn-link` | Additional CSS for the toolbar `btn` buttons. |
+| `classes.pageLinkToolbarButton` | string | `undefined` | Additional CSS for the toolbar buttons when displayed as `page-item` components. |
 
 ### templates
 The HTML element template used to to define the pagination structure.
@@ -148,7 +149,7 @@ The HTML element template used to to define the pagination structure.
 | `templates.pageLink` | string | `<a href="#" class="page-link text-center align-content-center"></a>` | The `page-link` anchor. |
 | `templates.pageLinkNav` | string | `<button type="button" class="page-link text-center align-content-center"></button>` | The `page-link` anchor used for forward or backward navigation. |
 | `templates.icon` | string | `<i class="bi"></i>` | THe Bootstrap Icon container. |
-| `templates.toolbar` | string | `<div class="btn-toolbar rounded rounded-top-0 justify-content-center" role="toolbar"></div>` | The Bootstrap button toolbar component. |
+| `templates.toolbar` | string | `<div class="btn-toolbar rounded justify-content-center" role="toolbar"></div>` | The Bootstrap button toolbar component. |
 | `templates.toolbarButtonGroup` | string | `<div class="btn-group" role="group"></div>` | The individual button group elements. |
 | `templates.toolbarButton` | string | `<button type="button" class="btn"></button>` | The toolbar button. |
 | `templates.disabledPageItem` | string | `<span class="d-inline-block" tabindex="0"></span>` | A disabled `page-item` element. This allows disabled elements to still display tooltips. |
@@ -163,6 +164,9 @@ Text string content displayed by the pagination control. This can be modified fo
 | `text.disabled` | string | `Disabled` | |
 | `text.startOfRange` | string | `Start of range` | |
 | `text.endOfRange` | string | `End of range` | |
+| `text.todayButtonTooltip` | string | `Go to Today` | |
+| `text.todayButtonTooltip` | string | `Select a date` | |
+
 
 ### icons
 The Bootstrap Icon classes used for icons.
